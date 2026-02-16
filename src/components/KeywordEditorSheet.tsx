@@ -7,7 +7,13 @@ import {
   SheetFooter,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import TagInput from "@/components/TagInput";
 import FlexMessageEditor from "@/components/FlexMessageEditor";
 
@@ -27,57 +33,46 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-[85vw] w-[85vw] flex flex-col p-0">
+      <SheetContent side="right" className="sm:max-w-[68vw] w-[68vw] flex flex-col p-0">
         <SheetHeader className="px-6 pt-6 pb-3">
           <SheetTitle>{mode === "create" ? "新增關鍵字訊息" : "編輯關鍵字訊息"}</SheetTitle>
         </SheetHeader>
 
         {/* Compact fields area */}
-        <div className="px-6 pb-3 space-y-2">
-          {/* Row 1: Type + Keywords */}
-          <div className="flex items-start gap-4">
-            <div className="shrink-0">
-              <label className="text-xs text-muted-foreground mb-1 block">類型</label>
-              <div className="flex gap-1">
-                <Badge
-                  className={`cursor-pointer select-none ${
-                    type === "Text"
-                      ? "bg-[hsl(var(--badge-text-bg))] text-[hsl(var(--badge-text-fg))] hover:bg-[hsl(var(--badge-text-bg))]"
-                      : "bg-secondary text-muted-foreground hover:bg-secondary/80"
-                  }`}
-                  onClick={() => setType("Text")}
-                >
-                  文字
-                </Badge>
-                <Badge
-                  className={`cursor-pointer select-none ${
-                    type === "Flex"
-                      ? "bg-[hsl(var(--badge-flex-bg))] text-[hsl(var(--badge-flex-fg))] hover:bg-[hsl(var(--badge-flex-bg))]"
-                      : "bg-secondary text-muted-foreground hover:bg-secondary/80"
-                  }`}
-                  onClick={() => setType("Flex")}
-                >
-                  FLEX
-                </Badge>
+        <div className="px-6 pb-3">
+          <div className="flex items-start gap-6">
+            {/* Left: Category + Keywords */}
+            <div className="flex-1 space-y-2">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">訊息類型</label>
+                <Select value={type} onValueChange={(v) => setType(v as MessageType)}>
+                  <SelectTrigger className="w-[140px] h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Text">文字</SelectItem>
+                    <SelectItem value="Flex">FLEX</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">
+                  觸發關鍵字（Enter 或逗號新增）
+                </label>
+                <TagInput tags={keywords} onChange={setKeywords} placeholder="輸入關鍵字..." />
               </div>
             </div>
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground mb-1 block">
-                觸發訊息的關鍵字 (Enter 或逗號新增)
-              </label>
-              <TagInput tags={keywords} onChange={setKeywords} placeholder="輸入關鍵字..." />
-            </div>
-          </div>
 
-          {/* Row 2: Remove tags + Add tags */}
-          <div className="flex items-start gap-4">
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground mb-1 block">同時刪除標籤</label>
-              <TagInput tags={removeTags} onChange={setRemoveTags} placeholder="輸入標籤..." />
-            </div>
-            <div className="flex-1">
-              <label className="text-xs text-muted-foreground mb-1 block">然後加入標籤</label>
-              <TagInput tags={addTags} onChange={setAddTags} placeholder="輸入標籤..." />
+            {/* Right: Tag management */}
+            <div className="flex-1 space-y-2">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">觸發時加入標籤</label>
+                <TagInput tags={addTags} onChange={setAddTags} placeholder="輸入標籤..." />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">觸發時移除標籤</label>
+                <TagInput tags={removeTags} onChange={setRemoveTags} placeholder="輸入標籤..." />
+              </div>
             </div>
           </div>
         </div>
