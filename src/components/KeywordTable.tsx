@@ -1,4 +1,5 @@
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -8,6 +9,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import KeywordEditorSheet from "@/components/KeywordEditorSheet";
 
 type MessageType = "Text" | "Carousel" | "Bubble";
 
@@ -34,8 +37,28 @@ const typeLabels: Record<MessageType, string> = {
 };
 
 const KeywordTable = () => {
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [sheetMode, setSheetMode] = useState<"create" | "edit">("create");
+
+  const handleCreate = () => {
+    setSheetMode("create");
+    setSheetOpen(true);
+  };
+
+  const handleEdit = () => {
+    setSheetMode("edit");
+    setSheetOpen(true);
+  };
+
   return (
     <div className="flex-1 overflow-auto p-6">
+      <div className="flex items-center justify-end mb-4">
+        <Button size="sm" onClick={handleCreate}>
+          <Plus size={16} />
+          新增
+        </Button>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
@@ -67,6 +90,7 @@ const KeywordTable = () => {
                     <button
                       className="rounded-md p-1.5 text-edit-icon transition-colors hover:bg-accent"
                       title="編輯"
+                      onClick={handleEdit}
                     >
                       <Pencil size={17} />
                     </button>
@@ -83,6 +107,12 @@ const KeywordTable = () => {
           })}
         </TableBody>
       </Table>
+
+      <KeywordEditorSheet
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+        mode={sheetMode}
+      />
     </div>
   );
 };
