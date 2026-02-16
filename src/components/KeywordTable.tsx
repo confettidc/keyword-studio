@@ -51,7 +51,10 @@ const KeywordTable = () => {
               <TableRow key={entry.id}>
                 <TableCell className="font-medium">{entry.keyword}</TableCell>
                 <TableCell>
-                  <Badge variant="secondary">{label}</Badge>
+                  <Badge className={label === "文字" 
+                    ? "bg-[hsl(var(--badge-text-bg))] text-[hsl(var(--badge-text-fg))] hover:bg-[hsl(var(--badge-text-bg))]" 
+                    : "bg-[hsl(var(--badge-flex-bg))] text-[hsl(var(--badge-flex-fg))] hover:bg-[hsl(var(--badge-flex-bg))]"
+                  }>{label}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-end gap-1">
