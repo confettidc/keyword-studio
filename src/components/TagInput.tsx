@@ -7,9 +7,10 @@ interface TagInputProps {
   tags: string[];
   onChange: (tags: string[]) => void;
   placeholder?: string;
+  variant?: "default" | "keyword";
 }
 
-const TagInput = ({ tags, onChange, placeholder }: TagInputProps) => {
+const TagInput = ({ tags, onChange, placeholder, variant = "default" }: TagInputProps) => {
   const [inputValue, setInputValue] = useState("");
 
   const addTag = (value: string) => {
@@ -20,7 +21,7 @@ const TagInput = ({ tags, onChange, placeholder }: TagInputProps) => {
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
+    if (e.key === "Enter" || e.key === "," || e.key === "Tab") {
       e.preventDefault();
       addTag(inputValue);
       setInputValue("");
@@ -46,7 +47,15 @@ const TagInput = ({ tags, onChange, placeholder }: TagInputProps) => {
   return (
     <div className="flex flex-wrap items-center gap-1 rounded-md border border-input bg-background px-2 py-1 min-h-[36px]">
       {tags.map((tag, i) => (
-        <Badge key={i} variant="secondary" className="gap-1 text-xs py-0.5 px-2">
+        <Badge
+          key={i}
+          variant="secondary"
+          className={`gap-1 text-xs py-0.5 px-2 ${
+            variant === "keyword"
+              ? "rounded-none bg-primary/15 text-primary border border-primary/30"
+              : ""
+          }`}
+        >
           {tag}
           <button type="button" onClick={() => removeTag(i)} className="ml-0.5 hover:text-destructive">
             <X size={12} />
