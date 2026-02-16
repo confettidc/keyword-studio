@@ -34,6 +34,13 @@ const ELEMENT_BUTTONS: { type: ElementType; label: string; icon: React.ElementTy
   { type: "box", label: "Box", icon: Square },
 ];
 
+const SECTION_ELEMENTS: Record<SectionName, ElementType[]> = {
+  Header: ["text", "image", "separator", "box"],
+  Hero: ["image"],
+  Body: ["text", "image", "separator", "box"],
+  Footer: ["text", "image", "separator", "box"],
+};
+
 const SECTIONS: SectionName[] = ["Header", "Hero", "Body", "Footer"];
 
 const TYPE_COLORS: Record<ElementType, string> = {
@@ -168,7 +175,7 @@ const FlexMessageEditor = () => {
       <div className="flex-1 overflow-auto flex flex-col min-w-0">
         {/* Element type buttons */}
         <div className="flex items-center gap-1 px-3 py-2 border-b border-border bg-muted/10">
-          {ELEMENT_BUTTONS.map((eb) => (
+          {ELEMENT_BUTTONS.filter((eb) => SECTION_ELEMENTS[activeSection].includes(eb.type)).map((eb) => (
             <Button
               key={eb.type}
               variant="ghost"
