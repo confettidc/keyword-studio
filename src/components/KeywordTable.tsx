@@ -1,4 +1,4 @@
-import { Eye, Pencil, Trash2, Type, LayoutGrid, MessageCircle } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 type MessageType = "Text" | "Carousel" | "Bubble";
 
@@ -26,10 +27,10 @@ const mockData: KeywordEntry[] = [
   { id: 7, keyword: "歡迎光臨", type: "Bubble" },
 ];
 
-const typeConfig: Record<MessageType, { icon: typeof Type; colorClass: string }> = {
-  Text: { icon: Type, colorClass: "text-type-text" },
-  Carousel: { icon: LayoutGrid, colorClass: "text-type-carousel" },
-  Bubble: { icon: MessageCircle, colorClass: "text-type-bubble" },
+const typeLabels: Record<MessageType, string> = {
+  Text: "文字",
+  Carousel: "FLEX",
+  Bubble: "FLEX",
 };
 
 const KeywordTable = () => {
@@ -38,27 +39,19 @@ const KeywordTable = () => {
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            <TableHead className="w-16">#</TableHead>
             <TableHead>關鍵字</TableHead>
             <TableHead className="w-32">類別</TableHead>
             <TableHead className="w-36 text-right">操作</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {mockData.map((entry, index) => {
-            const typeInfo = typeConfig[entry.type];
-            const TypeIcon = typeInfo.icon;
+          {mockData.map((entry) => {
+            const label = typeLabels[entry.type];
             return (
               <TableRow key={entry.id}>
-                <TableCell className="font-medium text-muted-foreground">
-                  {index + 1}
-                </TableCell>
                 <TableCell className="font-medium">{entry.keyword}</TableCell>
                 <TableCell>
-                  <span className={`inline-flex items-center gap-1.5 ${typeInfo.colorClass}`}>
-                    <TypeIcon size={15} />
-                    <span className="text-sm">{entry.type}</span>
-                  </span>
+                  <Badge variant="secondary">{label}</Badge>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center justify-end gap-1">
