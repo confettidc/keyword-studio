@@ -46,8 +46,10 @@
     --edit-icon: 230 60% 50%;
     --delete-icon: 10 75% 55%;
     --preview-icon: 220 10% 50%;
-    --type-text: 210 60% 50%;
-    --type-carousel: 30 80% 55%;
+    --badge-text-bg: 210 60% 93%;
+    --badge-text-fg: 210 60% 35%;
+    --badge-flex-bg: 30 80% 92%;
+    --badge-flex-fg: 30 70% 38%;
     --type-bubble: 280 60% 55%;
   }
 
