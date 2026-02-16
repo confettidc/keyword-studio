@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Sheet,
   SheetContent,
@@ -18,6 +18,7 @@ import TagInput from "@/components/TagInput";
 import FlexMessageEditor from "@/components/FlexMessageEditor";
 
 type MessageType = "Text" | "Flex";
+type TemplateOption = "Template 1" | "Template 2" | "Template 3";
 
 interface KeywordEditorSheetProps {
   open: boolean;
@@ -25,17 +26,39 @@ interface KeywordEditorSheetProps {
   mode: "create" | "edit";
 }
 
+const MOCK_EDIT_KEYWORDS = ["test", "hello", "歡迎"];
+
 const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProps) => {
   const [type, setType] = useState<MessageType>("Text");
-  const [keywords, setKeywords] = useState<string[]>([]);
+  const [keywords, setKeywords] = useState<string[]>(mode === "edit" ? MOCK_EDIT_KEYWORDS : []);
   const [removeTags, setRemoveTags] = useState<string[]>([]);
   const [addTags, setAddTags] = useState<string[]>([]);
+  const [template, setTemplate] = useState<TemplateOption>("Template 1");
+
+  // Reset keywords when mode changes
+  useEffect(() => {
+    setKeywords(mode === "edit" ? MOCK_EDIT_KEYWORDS : []);
+    setAddTags([]);
+    setRemoveTags([]);
+  }, [mode, open]);
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="sm:max-w-[68vw] w-[68vw] flex flex-col p-0">
         <SheetHeader className="px-6 pt-6 pb-3">
-          <SheetTitle>{mode === "create" ? "新增關鍵字訊息" : "編輯關鍵字訊息"}</SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle>{mode === "create" ? "新增關鍵觸發" : "編輯關鍵觸發"}</SheetTitle>
+            <Select value={template} onValueChange={(v) => setTemplate(v as TemplateOption)}>
+              <SelectTrigger className="w-[150px] h-9">
+                <SelectValue placeholder="選擇模版" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Template 1">Template 1</SelectItem>
+                <SelectItem value="Template 2">Template 2</SelectItem>
+                <SelectItem value="Template 3">Template 3</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </SheetHeader>
 
         {/* Compact fields area */}
@@ -59,7 +82,7 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
                 <label className="text-xs text-muted-foreground mb-1 block">
                   觸發關鍵字（Enter 或逗號新增）
                 </label>
-                <TagInput tags={keywords} onChange={setKeywords} placeholder="輸入關鍵字..." />
+                <TagInput tags={keywords} onChange={setKeywords} placeholder="輸入關鍵字..." variant="keyword" />
               </div>
             </div>
 
