@@ -100,7 +100,11 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
                     {el.type === "image" ? "IMG" : "TXT"}
                   </span>
                   <span className="text-xs text-foreground truncate">{el.label}</span>
-                  <span className="text-xs text-muted-foreground ml-auto">{isExpanded ? "▾" : "▸"}</span>
+                  {el.type === "image" ? (
+                    <span className="ml-auto text-muted-foreground shrink-0">—</span>
+                  ) : (
+                    <span className="text-xs text-muted-foreground ml-auto truncate max-w-[45%] text-right">{getValue(el) || ""}</span>
+                  )}
                 </button>
                 {/* Expanded editor */}
                 {isExpanded && (
