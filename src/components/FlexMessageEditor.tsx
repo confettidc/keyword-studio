@@ -82,13 +82,13 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
   return (
     <div className="flex flex-1 gap-0 overflow-hidden min-h-0 border border-border rounded-lg">
       {/* Left: Accordion Editor */}
-      <div className="flex-1 overflow-auto flex flex-col min-w-0 border-r border-border bg-muted/30">
+      <div className="flex-1 overflow-auto flex flex-col min-w-0 border-r border-border bg-muted/50">
         <div className="p-3 space-y-1">
           <p className="text-xs text-muted-foreground mb-1">點擊元素展開編輯</p>
           {tmpl.elements.map((el) => {
             const isExpanded = expandedId === el.id;
             return (
-              <div key={el.id} className="rounded-md border border-border overflow-hidden bg-card">
+              <div key={el.id} className="rounded-md border border-border overflow-hidden bg-background">
                 {/* Row header */}
                 <button
                   onClick={() => toggleExpand(el.id)}
@@ -104,7 +104,7 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
                 </button>
                 {/* Expanded editor */}
                 {isExpanded && (
-                  <div className="px-3 pb-3 pt-1 border-t border-border bg-card">
+                  <div className="px-3 pb-3 pt-1 border-t border-border bg-muted/30">
                     {el.type === "text" ? (
                       <textarea
                         className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[70px] mt-1"
