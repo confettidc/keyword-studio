@@ -45,7 +45,7 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-[68vw] w-[68vw] flex flex-col p-0">
+      <SheetContent side="right" className="sm:max-w-[58vw] w-[58vw] flex flex-col p-0">
         <SheetHeader className="px-6 pt-6 pb-3">
           <div className="flex items-center justify-between">
             <SheetTitle>{mode === "create" ? "新增關鍵觸發" : "編輯關鍵觸發"}</SheetTitle>
