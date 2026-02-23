@@ -34,6 +34,7 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
   const [removeTags, setRemoveTags] = useState<string[]>([]);
   const [addTags, setAddTags] = useState<string[]>([]);
   const [template, setTemplate] = useState<TemplateOption>("Template 1");
+  const [textContent, setTextContent] = useState("");
 
   // Reset keywords when mode changes
   useEffect(() => {
@@ -106,15 +107,34 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
         {/* Message Editor */}
         <div className="flex-1 overflow-hidden flex flex-col px-6 py-3 min-h-0">
           {type === "Text" ? (
-            <div className="flex-1 flex flex-col">
-              <label className="text-xs text-muted-foreground mb-1">訊息內容</label>
-              <textarea
-                className="flex-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                placeholder="輸入文字訊息..."
-              />
+            <div className="flex-1 flex gap-4 min-h-0">
+              {/* Left: textarea */}
+              <div className="flex-1 flex flex-col min-w-0">
+                <label className="text-xs text-muted-foreground mb-1">訊息內容</label>
+                <textarea
+                  className="flex-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  placeholder="輸入文字訊息..."
+                  value={textContent}
+                  onChange={(e) => setTextContent(e.target.value)}
+                />
+              </div>
+              {/* Right: LINE-style preview */}
+              <div className="w-[280px] shrink-0 overflow-auto bg-[hsl(var(--muted)/0.3)] rounded-lg p-3 flex flex-col">
+                <h3 className="text-xs font-semibold mb-2 text-muted-foreground">預覽</h3>
+                <div className="flex-1 flex flex-col bg-[#7494C0] rounded-xl p-4 min-h-[200px]">
+                  <div className="flex-1" />
+                  {textContent && (
+                    <div className="flex justify-start">
+                      <div className="bg-white text-foreground rounded-2xl rounded-tl-sm px-3 py-2 text-sm max-w-[85%] shadow-sm whitespace-pre-wrap break-words">
+                        {textContent}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           ) : (
-            <FlexMessageEditor />
+            <FlexMessageEditor template={template} />
           )}
         </div>
 
