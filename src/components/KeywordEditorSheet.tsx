@@ -124,8 +124,8 @@ const KeywordEditorSheet = ({ open, onOpenChange, mode }: KeywordEditorSheetProp
                 <div className="flex-1 flex flex-col bg-[#7494C0] rounded-xl p-4 min-h-[200px]">
                   <div className="flex-1" />
                   {textContent && (
-                    <div className="flex justify-start">
-                      <div className="bg-white text-foreground rounded-2xl rounded-tl-sm px-3 py-2 text-sm max-w-[85%] shadow-sm whitespace-pre-wrap break-words">
+                    <div className="flex justify-end">
+                      <div className="bg-[#06C755] text-white rounded-2xl rounded-br-sm px-3 py-2 text-sm max-w-[85%] shadow-sm whitespace-pre-wrap break-words">
                         {textContent}
                       </div>
                     </div>
