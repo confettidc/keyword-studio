@@ -52,8 +52,9 @@ interface FlexMessageEditorProps {
 
 const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
   const [values, setValues] = useState<Record<string, Record<string, string>>>({});
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const activeUploadId = useRef<string | null>(null);
 
   const tmpl = TEMPLATES[template];
 
@@ -74,78 +75,75 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
     reader.readAsDataURL(file);
   };
 
-  const selectedEl = selectedId ? tmpl.elements.find((e) => e.id === selectedId) : null;
+  const toggleExpand = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  };
 
   return (
     <div className="flex flex-1 gap-0 overflow-hidden min-h-0 border border-border rounded-lg">
-      {/* Left: Editor */}
+      {/* Left: Accordion Editor */}
       <div className="flex-1 overflow-auto flex flex-col min-w-0 border-r border-border">
-        {selectedEl ? (
-          <div className="p-4 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-foreground">{selectedEl.label}</span>
-              <button
-                onClick={() => setSelectedId(null)}
-                className="text-xs text-muted-foreground hover:text-foreground"
-              >
-                ← 返回
-              </button>
-            </div>
-            {selectedEl.type === "text" ? (
-              <div className="space-y-1">
-                <label className="text-xs text-muted-foreground">文字內容</label>
-                <textarea
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[80px]"
-                  value={getValue(selectedEl)}
-                  onChange={(e) => setValue(selectedEl.id, e.target.value)}
-                />
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <label className="text-xs text-muted-foreground">圖片網址</label>
-                <Input
-                  value={getValue(selectedEl)}
-                  onChange={(e) => setValue(selectedEl.id, e.target.value)}
-                  placeholder="貼上圖片網址..."
-                  className="h-9 text-sm"
-                />
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="border border-dashed border-border rounded p-4 text-center cursor-pointer hover:bg-muted/30 transition-colors"
+        <div className="p-3 space-y-1">
+          <p className="text-xs text-muted-foreground mb-1">點擊元素展開編輯</p>
+          {tmpl.elements.map((el) => {
+            const isExpanded = expandedId === el.id;
+            return (
+              <div key={el.id} className="rounded-md border border-border overflow-hidden">
+                {/* Row header */}
+                <button
+                  onClick={() => toggleExpand(el.id)}
+                  className={`w-full text-left flex items-center gap-2 px-3 py-2 transition-colors ${
+                    isExpanded ? "bg-muted/60" : "hover:bg-muted/30"
+                  }`}
                 >
-                  <Upload size={16} className="mx-auto mb-1 text-muted-foreground" />
-                  <p className="text-xs text-muted-foreground">點擊上傳圖片</p>
-                </div>
-                {getValue(selectedEl) && (
-                  <img
-                    src={getValue(selectedEl)}
-                    alt=""
-                    className="w-full rounded border border-border object-cover max-h-[150px]"
-                  />
+                  <span className="text-[10px] font-medium uppercase px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
+                    {el.type === "image" ? "IMG" : "TXT"}
+                  </span>
+                  <span className="text-xs text-foreground truncate">{el.label}</span>
+                  <span className="text-xs text-muted-foreground ml-auto">{isExpanded ? "▾" : "▸"}</span>
+                </button>
+                {/* Expanded editor */}
+                {isExpanded && (
+                  <div className="px-3 pb-3 pt-1 border-t border-border bg-background">
+                    {el.type === "text" ? (
+                      <textarea
+                        className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring min-h-[70px] mt-1"
+                        value={getValue(el)}
+                        onChange={(e) => setValue(el.id, e.target.value)}
+                      />
+                    ) : (
+                      <div className="space-y-2 mt-1">
+                        <Input
+                          value={getValue(el)}
+                          onChange={(e) => setValue(el.id, e.target.value)}
+                          placeholder="貼上圖片網址..."
+                          className="h-8 text-sm"
+                        />
+                        <div
+                          onClick={() => {
+                            activeUploadId.current = el.id;
+                            fileInputRef.current?.click();
+                          }}
+                          className="border border-dashed border-border rounded p-3 text-center cursor-pointer hover:bg-muted/30 transition-colors"
+                        >
+                          <Upload size={14} className="mx-auto mb-0.5 text-muted-foreground" />
+                          <p className="text-xs text-muted-foreground">點擊上傳圖片</p>
+                        </div>
+                        {getValue(el) && (
+                          <img
+                            src={getValue(el)}
+                            alt=""
+                            className="w-full rounded border border-border object-cover max-h-[120px]"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
-            )}
-          </div>
-        ) : (
-          <div className="p-4 space-y-2">
-            <p className="text-xs text-muted-foreground mb-2">點擊右側預覽中的元素進行編輯</p>
-            {tmpl.elements.map((el) => (
-              <button
-                key={el.id}
-                onClick={() => setSelectedId(el.id)}
-                className="w-full text-left flex items-center gap-2 px-3 py-2 rounded-md border border-border hover:bg-muted/50 transition-colors"
-              >
-                <span className="text-[10px] font-medium uppercase px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-                  {el.type === "image" ? "IMG" : "TXT"}
-                </span>
-                <span className="text-xs text-foreground truncate">{el.label}</span>
-                <span className="text-xs text-muted-foreground truncate ml-auto max-w-[120px]">
-                  {getValue(el) || "—"}
-                </span>
-              </button>
-            ))}
-          </div>
-        )}
+            );
+          })}
+        </div>
 
         <input
           ref={fileInputRef}
@@ -154,7 +152,7 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
           className="hidden"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file && selectedId) handleFileUpload(selectedId, file);
+            if (file && activeUploadId.current) handleFileUpload(activeUploadId.current, file);
             e.target.value = "";
           }}
         />
@@ -166,12 +164,12 @@ const FlexMessageEditor = ({ template }: FlexMessageEditorProps) => {
         <div className="rounded-xl border border-border bg-background overflow-hidden shadow-sm">
           {tmpl.elements.map((el) => {
             const val = getValue(el);
-            const isSelected = selectedId === el.id;
+            const isSelected = expandedId === el.id;
 
             return (
               <div
                 key={el.id}
-                onClick={() => setSelectedId(el.id)}
+                onClick={() => toggleExpand(el.id)}
                 className={`cursor-pointer transition-all ${
                   isSelected
                     ? "ring-2 ring-primary ring-inset"
